@@ -6,11 +6,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MailList from '../../components/mailList/MailList';
 import Footer from '../../components/footer/Footer'
 import { faCircleArrowLeft, faCircleArrowRight, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import useFetch from'../../hooks/useFetch';
+import { useLocation } from 'react-router-dom';
+
 
 const Hotel = () => {
-
+  
+ const location = useLocation();
+ console.log(location);
+  const id = location.pathname.split("/")[2];
+  console.log(id);
   const [sliderNumber,setSliderNumber] = useState(0);
   const [open,setOpen] = useState(false);
+
+  const {data, loading,error} = useFetch(`/hotels/find/${id}`)
   const photos = [
     {
       src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707778.jpg?k=56ba0babbcbbfeb3d3e911728831dcbc390ed2cb16c51d88159f82bf751d04c6&o=&hp=1",
@@ -48,10 +57,11 @@ const Hotel = () => {
     }
 
   return (
-     <>
+     <div>
       <Navbar/>
       <Header type= "list"/>
-      <div className="hotelContainer">
+     { loading ? ("Loading")  :(
+     <div className="hotelContainer">
         {
           open &&
         
@@ -59,29 +69,29 @@ const Hotel = () => {
          <FontAwesomeIcon icon={faCircleXmark} className ='close' onClick={()=>setOpen(false)} />
          <FontAwesomeIcon icon={faCircleArrowLeft} className= 'arrow' onClick={()=> handleMove("l")} />
          <div className="sliderWrapper">
-          <img src= {photos[sliderNumber].src} alt="" className='sliderImg'  />
+          <img src= {photos[sliderNumber]} alt="" className='sliderImg'  />
          </div>
          <FontAwesomeIcon icon={faCircleArrowRight} className= 'arrow' onClick={()=> handleMove("r")}/>
         </div>
 }
         <div className="hotelWrapper">
           <button className="buttonNow">Reserve or Book Now!</button>
-          <h1 className='hotelTitle'>Grand Hotel</h1>
+          <h1 className='hotelTitle'>{data.name}</h1>
           <div className="hotelAddress">
             {/* <FontAwesomeIcon icon={faLocationDot}/> */}
-            <span>Elton St 127 New York</span>
+            <span>{data.address}</span>
           </div>
           <span className='hotelDistance'>
-            Excellent location - 20m from center
+            Excellent location - {data.distance} from center
           </span>
-          <span className='hotelPriceHighlight'>Book a stay over $110 at this property and get a free airpot taxi</span>
+          <span className='hotelPriceHighlight'>Book a stay over ${data.cheapestPrice} at this property and get a free airpot taxi</span>
           <div className="hotelImages">
             {
-              photos.map((photo,i)=>(
+              data.photos?.map((photo,i)=>(
                 <div className='hotelImgWrapper' key={i}>
                   <img 
                    onClick={()=> handleOpen(i)}
-                   src={photo.src}
+                   src={photo}
                    alt= ""
                    className='hotelImg'/>
                 </div>
@@ -90,17 +100,9 @@ const Hotel = () => {
           </div>
           <div className="hotelDetails">
             <div className="hotelDetailsTexts">
-            <h1 className='hotelTitle'>Stay in the heart of Krakow</h1>
+            <h1 className='hotelTitle'>{data.title}</h1>
               <p className='hotelDesc'>
-               Located a 5-minute walk from St. Florian's Gate in Krakow , Tower Street Apartmants has accomodations with air conditioning and free WIFI. The units come with hardwood floors and feature a
-                fully equipped kitchenette with a microwave, a flat-screen TV,
-                and a private bathroom with shower and a hairdryer. A fridge is
-                also offered, as well as an electric tea pot and a coffee
-                machine. Popular points of interest near the apartment include
-                Cloth Hall, Main Market Square and Town Hall Tower. The nearest
-                airport is John Paul II International Kraków–Balice, 16.1 km
-                from Tower Street Apartments, and the property offers a paid
-                airport shuttle service.
+              {data.desc}
               </p>
              
             </div>
@@ -119,7 +121,8 @@ const Hotel = () => {
         <MailList/>
         <Footer/>
       </div>
-     </>
+)}
+     </div>
   )
 }
 

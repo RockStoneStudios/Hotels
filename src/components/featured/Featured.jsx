@@ -1,10 +1,18 @@
-import React from 'react'
+import React from 'react';
+import useFetch from '../../hooks/useFetch';
 import './featured.css';
+import clienteAxios from '../../config/clientAxios';
+
+
 const Featured = () => {
-  return (
-    <>
+   const {data,loading,error}  = useFetch("/hotels/countByCity?cities=Sopetran,Santafe,Sanje")
+     
+   return (
+    
   <div className="featured">
-         <div className="featuredItem">
+        { loading ? ("Loading please wait") : (
+        <>
+        <div className="featuredItem">
             <img
             src="https://i.ytimg.com/vi/3hp_2y3Hybc/maxresdefault.jpg"
             alt=""
@@ -12,7 +20,7 @@ const Featured = () => {
             />
             <div className="featuredTitles">
                 <h1>Sopetran</h1>
-                <h2>123 properties</h2>
+                <h2>{data[0]} properties</h2>
             </div>
          </div>
          <div className="featuredItem">
@@ -22,8 +30,8 @@ const Featured = () => {
             className="featuredImg"
             />
             <div className="featuredTitles">
-                <h1>Bonaire</h1>
-                <h2>127 properties</h2>
+                <h1>Santa Fe de Antioquia</h1>
+                <h2>{data[1]} properties</h2>
             </div>
          </div>
          <div className="featuredItem">
@@ -33,12 +41,15 @@ const Featured = () => {
             className="featuredImg"
             />
             <div className="featuredTitles">
-                <h1>ArcoIris</h1>
-                <h2>127 properties</h2>
+                <h1>San Jeronimo</h1>
+                <h2>{data[2]} properties</h2>
             </div>
          </div>
+         </> 
+        )}
     </div>
-</>
+   
+
   )
 }
 

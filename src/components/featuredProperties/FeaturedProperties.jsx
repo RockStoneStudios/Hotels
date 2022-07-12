@@ -1,39 +1,32 @@
 import React from 'react'
 import './featuredProperties.css';
-
+import useFetch from '../../hooks/useFetch';
 const FeaturedProperties = () => {
+    const {loading,data,error} = useFetch('/hotels?featured=true&limit=4');
   return (
     <div className='fp'>
-        <div className="fpItem">
-            <img className='fpImg' src="https://cf.bstatic.com/xdata/images/hotel/square600/13125860.webp?k=e148feeb802ac3d28d1391dad9e4cf1e12d9231f897d0b53ca067bde8a9d3355&o=&s=1" alt="" />
-                <span className="fpName">Aparthotel satre Miasto</span>
-                <span className='fpCity'>Madrid</span>
-                <span className='fpPrice'>Starting from $120</span>
-                <div className="fpRating">
-                    <button>8.9</button>
-                    <span>Excellent</span>
-                </div>
-       </div>
-       <div className="fpItem">
-            <img className='fpImg' src="https://cf.bstatic.com/xdata/images/hotel/square600/13125860.webp?k=e148feeb802ac3d28d1391dad9e4cf1e12d9231f897d0b53ca067bde8a9d3355&o=&s=1" alt="" />
-                <span className="fpName">Aparthotel satre Miasto</span>
-                <span className='fpCity'>Madrid</span>
-                <span className='fpPrice'>Starting from $120</span>
-                <div className="fpRating">
-                    <button>8.9</button>
-                    <span>Excellent</span>
-                </div>
-       </div>
-       <div className="fpItem">
-            <img className='fpImg' src="https://cf.bstatic.com/xdata/images/hotel/square600/13125860.webp?k=e148feeb802ac3d28d1391dad9e4cf1e12d9231f897d0b53ca067bde8a9d3355&o=&s=1" alt="" />
-                <span className="fpName">Aparthotel satre Miasto</span>
-                <span className='fpCity'>Madrid</span>
-                <span className='fpPrice'>Starting from $120</span>
-                <div className="fpRating">
-                    <button>8.9</button>
-                    <span>Excellent</span>
-                </div>
-       </div>
+        {
+        loading ? "Loading" : 
+     <>
+        {data.map(item =>(
+
+            <div className="fpItem" key={item._id}>
+                <img
+                 className='fpImg' 
+                 src={item.photos[0]}
+                  alt="" />
+                    <span className="fpName">{item.name}</span>
+                    <span className='fpCity'>{item.city}</span>
+                    <span className='fpPrice'>Starting from ${item.cheapestPrice}</span>
+                   {item.rating &&  <div className="fpRating">
+                        <button>{item.rating}</button>
+                        <span>Excellent</span>
+                       </div>
+                   }
+            </div>
+        ))}
+     </>
+     }
     </div>
   )
 }
